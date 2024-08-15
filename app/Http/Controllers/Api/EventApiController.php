@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\EventResource;
 use App\Models\Event;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
 
 class EventApiController extends Controller
 {
@@ -17,8 +18,12 @@ class EventApiController extends Controller
 		);
 	}
 
-	public function show(Event $event)
+	public function show(string $slug): Response|EventResource
 	{
-		return $event;
+		if (!$event = Event::query()->firstWhere('slug', $slug)) {
+			return __404();
+		}
+
+		return new EventResource($event);
 	}
 }

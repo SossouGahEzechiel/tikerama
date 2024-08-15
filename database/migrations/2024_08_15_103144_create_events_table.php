@@ -1,7 +1,6 @@
 <?php
 
-use App\Enums\EventCategoryEnum;
-use App\Enums\EventStatusEnum;
+use App\Enums\{EventCategoryEnum, EventStatusEnum};
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +20,7 @@ return new class extends Migration {
 			$table->string('city', 100)->comment("Ville où se déroule l’événement");
 			$table->string('address', 200)->comment("Adresse de l’événement");
 			$table->enum('status', EventStatusEnum::values())->comment("Statut de l’événement");
+			$table->string('code')->nullable()->comment("Code de l'évènement");
 			$table->timestamps();
 		});
 	}

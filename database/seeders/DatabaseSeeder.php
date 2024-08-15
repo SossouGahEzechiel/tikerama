@@ -10,12 +10,10 @@ class DatabaseSeeder extends Seeder
 {
 	public function run(): void
 	{
-		/*User::factory()->create([
-			'name' => 'Test User',
-			'email' => 'test@example.com',
-		]);*/
-		Event::factory()->count(100)->create()->each(fn($event) => TicketType::factory()
+
+		Event::factory()->count(100)->generateCode()->create()->each(fn($event) => TicketType::factory()
 			->count(fake()->randomNumber(1, 5))
-			->create(['event_id' => $event->id]));
+			->create(['event_id' => $event->id])
+		);
 	}
 }

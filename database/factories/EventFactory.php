@@ -25,4 +25,9 @@ class EventFactory extends Factory
 			'date' => fake()->dateTimeBetween('now', '+2 years'),
 		];
 	}
+
+	public function generateCode(): self
+	{
+		return $this->afterCreating(fn(Event $event) => $event->setCode());
+	}
 }

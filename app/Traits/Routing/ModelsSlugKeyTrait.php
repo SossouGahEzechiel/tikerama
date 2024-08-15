@@ -16,7 +16,7 @@ trait ModelsSlugKeyTrait
 
 	public function hasSlugBaseKeyProvider(): bool
 	{
-		return false;
+		return true;
 	}
 
 	public function hasComplexSlug(): bool

@@ -7,15 +7,23 @@ use App\Traits\Routing\GenerateUniqueSlugTrait;
 use Illuminate\Database\Eloquent\{Collection, Model};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{HasMany, HasManyThrough};
+use Illuminate\Support\Str;
 
 /**
  * @property Collection<array-key, TicketType> $ticketTypes
  * @property Collection<array-key, Order> $orders
  * @property Collection<array-key, Ticket> $tickets
+ * @property string $slug
+ * @property string $id
  */
 class Event extends Model
 {
 	use HasFactory, GenerateUniqueSlugTrait;
+
+	public function getSlugBaseKeyName(): string
+	{
+		return "title";
+	}
 
 	protected $guarded = [
 		'id',
@@ -43,5 +51,11 @@ class Event extends Model
 	public function tickets(): HasManyThrough
 	{
 		return $this->hasManyThrough(Ticket::class, TicketType::class);
+	}
+
+	public function setCode(): self
+	{
+		$this->update(['code' => $this->getAttribute('id') . str(Str::random(5 - str($this->id)->length()))->upper()]);
+		return $this;
 	}
 }

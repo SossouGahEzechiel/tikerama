@@ -7,13 +7,15 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TicketTypeResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(Request $request): array
-    {
-        return parent::toArray($request);
-    }
+
+	public function toArray(Request $request): array
+	{
+		return [
+			'name' => $this->resource->name,
+			'slug' => $this->resource->slug,
+			'price' => $this->resource->price,
+			'quantity' => $this->resource->quantity,
+			'description' => $this->resource->description
+		];
+	}
 }

@@ -15,6 +15,10 @@ class TicketType extends Model
 
 	protected $guarded = ['id', 'slug'];
 
+	protected $casts = [
+		'price' => 'integer'
+	];
+
 	public function event(): BelongsTo
 	{
 		return $this->belongsTo(Event::class);

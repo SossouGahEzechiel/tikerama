@@ -21,6 +21,7 @@ class EventResource extends JsonResource
 			'description' => $this->resource->description,
 			'category' => $this->resource->category->value,
 			'types' => TicketTypeResource::collection($this->whenLoaded('ticketTypes')),
+			'lowerPrice' => $this->resource->getLowerTicketPrice() !== 0 ? $this->resource->getLowerTicketPrice() : 'Gratuit',
 		];
 	}
 }

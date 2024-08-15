@@ -43,6 +43,12 @@ class Event extends Model
 		return $this->hasMany(TicketType::class);
 	}
 
+
+	public function getLowerTicketPrice(): null|int
+	{
+		return $this->ticketTypes()->pluck('price')->min();
+	}
+
 	public function orders(): HasMany
 	{
 		return $this->hasMany(Order::class);

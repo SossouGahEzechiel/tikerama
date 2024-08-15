@@ -17,7 +17,7 @@ class TicketTypeFactory extends Factory
 			'name' => $this->faker->word,
 			'event_id' => Event::factory(),
 			'quantity' => $this->faker->numberBetween(1, 10),
-			'price' => $this->faker->randomElement([2_000, 5_000, 7_500, 10_000, 25_000, 50_000, 85_000]),
+			'price' => $this->faker->randomElement([0, 2_000, 5_000, 7_500, 10_000, 25_000, 50_000, 85_000]),
 			'description' => $this->faker->sentence,
 		];
 	}

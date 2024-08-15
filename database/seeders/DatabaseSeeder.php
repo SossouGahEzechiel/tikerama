@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
 	{
 
 		Event::factory()->count(100)->generateCode()->create()->each(fn($event) => TicketType::factory()
-			->count(fake()->randomNumber(1, 5))
+			->count(fake()->numberBetween(1, 5))
 			->create(['event_id' => $event->id])
 		);
 	}

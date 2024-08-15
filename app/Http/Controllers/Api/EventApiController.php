@@ -58,7 +58,7 @@ class EventApiController extends Controller
 	 * @param string $slug Le slug de l'événement.
 	 * @return Response|EventResource
 	 */
-	public function show(string $slug): Response|EventResource
+	public function get(string $slug): Response|EventResource
 	{
 		/**
 		 * @var Event $event

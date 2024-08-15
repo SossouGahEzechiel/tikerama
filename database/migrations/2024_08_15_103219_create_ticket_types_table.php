@@ -14,10 +14,10 @@ return new class extends Migration {
 			$table->string('slug')->comment("Chaîne de caractères utile à la navigation dans un navigateur");
 			$table->string('name', 50)->comment("Nom du type de ticket, par exemple Grand Public, VIP, Premium, etc");
 			$table->string('price', 10)->comment("Prix du type de ticket");
-			$table->integer('quantity', unsigned: true)
-				->comment("Quantité totale de tickets disponibles, tient compte des intentions de paiement");
 			$table->mediumText('description')
 				->comment("Description du type de ticket, par exemple : Place assise en première rangée, 1 boisson offerte");
+			$table->integer('quantity', unsigned: true)
+				->comment("Quantité totale de tickets disponibles, tient compte des intentions de paiement");
 			$table->foreignIdFor(Event::class)->comment("Identifiant de l’événement associé");
 		});
 	}

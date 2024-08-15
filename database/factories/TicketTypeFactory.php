@@ -26,7 +26,9 @@ class TicketTypeFactory extends Factory
 	{
 		return [
 			'name' => $this->faker->word, // Génère un nom de type de ticket factice
-			'quantity' => $this->faker->numberBetween(1, 10), // Génère une quantité de tickets entre 1 et 10
+			'quantity' => $quantity = $this->faker->numberBetween(1, 10), // Génère une quantité de tickets entre 1 et 10
+			'real_quantity' => $quantity, // Nombre total de tickets non vendus restants
+			'total_quantity' => $quantity, // Nombre total de ticket
 			'price' => $this->faker->randomElement([0, 2000, 5000, 7500, 10000, 25000, 50000, 85000]), // Génère un prix aléatoire parmi les valeurs spécifiées
 			'description' => $this->faker->sentence, // Génère une description factice pour le type de ticket
 		];

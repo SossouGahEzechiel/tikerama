@@ -12,4 +12,5 @@ Route::controller(EventApiController::class)->prefix('events')->group(function (
 Route::controller(IntentApiController::class)->prefix('intents')->group(function () {
 	Route::post('', 'store');
 	Route::get('{intent}', 'get');
+	Route::patch('{intent}', 'update');
 });

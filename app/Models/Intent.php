@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Routing\GenerateUniqueSlugTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Intent extends Model
 {
@@ -29,5 +30,10 @@ class Intent extends Model
 	public function event(): BelongsTo
 	{
 		return $this->belongsTo(Event::class);
+	}
+
+	public function order(): HasOne
+	{
+		return $this->hasOne(Order::class);
 	}
 }

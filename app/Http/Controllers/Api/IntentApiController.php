@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\TicketStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IntentResource;
-use App\Mappers\TicketTypeMapper;
 use App\Models\Intent;
-use App\Models\Order;
 use App\Models\TicketType;
 use Illuminate\Http\{Request, Response};
-use Illuminate\Support\Str;
-use Throwable;
 
+/**
+ * Contrôleur pour les actions liées aux intentions de commande dans l'API.
+ */
 class IntentApiController extends Controller
 {
+	/**
+	 * Stocke une nouvelle intention de commande dans la base de données.
+	 *
+	 * @param Request $request La requête HTTP entrante.
+	 * @return Response|IntentResource La réponse HTTP ou la ressource Intent.
+	 */
 	public function store(Request $request): Response|IntentResource
 	{
 		$rules = [
@@ -34,7 +38,6 @@ class IntentApiController extends Controller
 			'content' => $error = 'Les informations que vous avez fournies sont invalides',
 			'eventSlug' => $error
 		];
-
 
 		$validator = validator($request->all(), $rules, $messages, $attributes);
 
@@ -72,6 +75,8 @@ class IntentApiController extends Controller
 			return __200($unComputed);
 
 		/**
+		 * Crée une nouvelle instance de l'intention de commande.
+		 *
 		 * @var Intent $intent
 		 */
 		$intent = Intent::query()->create([
@@ -88,63 +93,17 @@ class IntentApiController extends Controller
 		return (new IntentResource($intent->load('event')));
 	}
 
+	/**
+	 * Récupère une intention de commande à partir de son slug.
+	 *
+	 * @param string $slug Le slug de l'intention de commande.
+	 * @return Response|IntentResource La réponse HTTP ou la ressource Intent.
+	 */
 	public function get(string $slug): Response|IntentResource
 	{
 		if (!$intent = Intent::query()->firstWhere('slug', $slug))
 			return __404("L'intention de commande à laquelle vous essayez d'accéder semble ne pas exister");
 
 		return new IntentResource($intent->load('event'));
-	}
-
-	public function update(Request $request, string $slug): Response|Order
-	{
-		$validator = validator($request->only('paymentMethod'), [
-			'paymentMethod' => 'required'
-		], attributes: [
-			'paymentMethod' => 'Le moyen de payement'
-		]);
-
-		if ($validator->fails()) {
-			return __422($validator->errors()->first());
-		}
-
-		/**
-		 * @var Intent $intent
-		 * @var Order $order
-		 */
-		if (!$intent = Intent::query()->firstWhere('slug', $slug))
-			return __404("L'intention de commande à laquelle vous essayez d'accéder semble ne pas exister");
-
-		try {
-			$order = Order::query()->create([
-				'price' => $intent->getAttribute('price'),
-				'author_email' => $intent->getAttribute('author_email'),
-				'author_phone' => $intent->getAttribute('author_phone'),
-				'event_id' => $intent->getAttribute('event_id'),
-				'payment_method' => $request->input('paymentMethod'),
-				'number' => Str::upper(Str::random(6))
-			]);
-
-			$tickets = [];
-			foreach (TicketTypeMapper::parse($intent->getAttribute('content')) as $item) {
-				$tickets[] = [
-					'email' => $intent->getAttribute('author_email'),
-					'phone' => $intent->getAttribute('author_phone'),
-					'price' => $intent->getAttribute('price'),
-					'status' => TicketStatusEnum::VALIDATED,
-					'ticket_type_id' => $item->type->id,
-					'event_id' => $intent->getAttribute('event_id'),
-					'key' => Str::upper(Str::random(6))
-				];
-			}
-
-			$order->tickets()->createMany($tickets);
-
-			$intent->delete();
-		} catch (Throwable $throwable) {
-			return __500($throwable->getMessage());
-		}
-
-		return $order->load('tickets');
 	}
 }

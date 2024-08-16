@@ -16,7 +16,8 @@
 	<li><strong>Clé API :</strong> {{ $apiKey }}</li>
 </ul>
 
-<p>Pour utiliser notre API, vous devez inclure la clé API dans l'en-tête `Api-Key` de toutes vos requêtes. Voici un
+<p>Pour utiliser notre API, vous devez inclure la clé API dans l'en-tête `Api-Key` et le nom de la clé Api dans
+	l'en-tête `Api-Key-Name` de toutes vos requêtes. Voici un
 	exemple de la manière dont vous pouvez le faire :</p>
 
 <pre><code>curl -H "Api-Key: {{ $apiKey }}" https://api.example.com/endpoint</code></pre>
@@ -34,4 +35,3 @@
 
 </body>
 </html>
-

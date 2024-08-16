@@ -11,6 +11,11 @@ use Throwable;
 
 class EnsureRequestHasApikeyHeader
 {
+
+	private const API_KEY_NAME = 'Api-Key-Name';
+
+	private const API_KEY = 'Api-Key';
+
 	/**
 	 * Handle an incoming request.
 	 *
@@ -23,15 +28,15 @@ class EnsureRequestHasApikeyHeader
 		$errorResponse = response(["Vous n'êtes pas autorisé à accéder à cette ressource. Vérifiez vos identifiants de connexion."], 403);
 
 		try {
-			if (!$request->hasHeader('Api-Key-Name') or !$request->hasHeader('Api-Key')) {
+			if (!$request->hasHeader(static::API_KEY_NAME) or !$request->hasHeader(self::API_KEY)) {
 				return $errorResponse;
 			}
 
-			if (!($user = ApiAccessRequest::query()->firstWhere('slug', $request->header('Api-Key-Name')))) {
+			if (!($apiAccessRequest = ApiAccessRequest::query()->firstWhere('slug', $request->header(self::API_KEY_NAME)))) {
 				return $errorResponse;
 			}
 
-			if (!Hash::check($user->api_key, $request->header('Api-Key'))) {
+			if (!Hash::check($apiAccessRequest->api_key, $request->header(self::API_KEY))) {
 				return $errorResponse;
 			}
 		} catch (Throwable) {

@@ -4,8 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\IntentResource;
-use App\Models\Intent;
-use App\Models\TicketType;
+use App\Models\{Intent, TicketType};
 use Illuminate\Http\{Request, Response};
 
 /**
@@ -21,9 +20,20 @@ class IntentApiController extends Controller
 	 */
 	public function store(Request $request): Response|IntentResource
 	{
+		$subRules = [
+			'email' => ['nullable'],
+			'phone' => ['nullable']
+		];
+
+		if (!request()->user()) {
+			$subRules = [
+				'email' => ['required', 'email'],
+				'phone' => ['required', 'min:10', 'max:20']
+			];
+		}
+
 		$rules = [
-			'email' => ['required', 'email'],
-			'phone' => ['required', 'min:10', 'max:20'],
+			...$subRules,
 			'content' => ['required', 'array'],
 			'eventSlug' => ['required', 'exists:events,slug']
 		];
@@ -71,8 +81,11 @@ class IntentApiController extends Controller
 				$unComputed = "Certains tickets sont soit insuffisant pour satisfaire votre demande ou ne sont plus disponibles";
 			}
 		}
-		if ($amount === 0)
+		if ($amount === 0) {
 			return __200($unComputed);
+		}
+
+		$user = $request->user();
 
 		/**
 		 * Crée une nouvelle instance de l'intention de commande.
@@ -83,9 +96,10 @@ class IntentApiController extends Controller
 			'content' => $content,
 			'price' => $amount,
 			'expiration_date' => now()->addMinutes(30),
-			'author_email' => $request->input('email'),
-			'author_phone' => $request->input('phone'),
-			'event_id' => $types->first()->event_id
+			'author_email' => $user?->email ?? $request->input('email'),
+			'author_phone' => $user?->phone ?? $request->input('phone'),
+			'event_id' => $types->first()->event_id,
+			'user_id' => $user?->id
 		]);
 
 		$intent->setAttribute('unComputed', $unComputed);

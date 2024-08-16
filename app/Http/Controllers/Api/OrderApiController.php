@@ -57,14 +57,18 @@ class OrderApiController extends Controller
 			return __404("L'intention de commande à laquelle vous essayez d'accéder semble ne pas exister");
 
 		try {
+
+			$user = $request->user();
+
 			// Création de la commande avec les informations de l'intention
 			$order = Order::query()->create([
 				'price' => $intent->getAttribute('price'),
-				'author_email' => $intent->getAttribute('author_email'),
-				'author_phone' => $intent->getAttribute('author_phone'),
+				'author_email' => $user?->email ?? $intent->getAttribute('author_email'),
+				'author_phone' => $user?->phone ?? $intent->getAttribute('author_phone'),
 				'event_id' => $intent->getAttribute('event_id'),
 				'payment_method' => $request->input('paymentMethod'),
-				'number' => Str::upper(Str::random(6)) // Génère un numéro de commande aléatoire
+				'number' => Str::upper(Str::random(6)), // Génère un numéro de commande aléatoire,
+				'user_id' => $user?->id
 			]);
 
 			// Création des tickets associés à la commande

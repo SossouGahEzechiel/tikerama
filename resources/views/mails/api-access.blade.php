@@ -12,6 +12,7 @@
 
 <p>Voici vos identifiants d'accès :</p>
 <ul>
+	<li><strong>Nom de la clé API :</strong> {{ $user->slug }}</li>
 	<li><strong>Clé API :</strong> {{ $apiKey }}</li>
 </ul>
 

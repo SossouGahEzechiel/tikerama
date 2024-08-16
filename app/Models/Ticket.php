@@ -34,7 +34,8 @@ class Ticket extends Model
 	 * @var array
 	 */
 	protected $casts = [
-		'status' => TicketStatusEnum::class
+		'status' => TicketStatusEnum::class,
+		'price' => 'integer'
 	];
 
 	/**

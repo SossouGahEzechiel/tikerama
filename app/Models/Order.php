@@ -24,6 +24,8 @@ class Order extends Model
 
 	protected $guarded = ['slug', 'created_at', 'updated_at'];
 
+	protected $casts = ['price' => 'integer'];
+
 	public function event(): BelongsTo
 	{
 		return $this->belongsTo(Event::class);

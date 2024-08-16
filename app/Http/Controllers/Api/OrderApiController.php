@@ -68,21 +68,24 @@ class OrderApiController extends Controller
 				'event_id' => $intent->getAttribute('event_id'),
 				'payment_method' => $request->input('paymentMethod'),
 				'number' => Str::upper(Str::random(6)), // Génère un numéro de commande aléatoire,
-				'user_id' => $user?->id
+				'user_id' => $user?->id // L'id de l'utilisateur s'il est connecté
 			]);
 
 			// Création des tickets associés à la commande
 			$tickets = [];
 			foreach (TicketTypeMapper::parse($intent->getAttribute('content')) as $item) {
-				$tickets[] = [
-					'email' => $intent->getAttribute('author_email'),
-					'phone' => $intent->getAttribute('author_phone'),
-					'price' => $intent->getAttribute('price'),
-					'status' => TicketStatusEnum::VALIDATED, // Définit le statut du ticket à 'VALIDATED'
-					'ticket_type_id' => $item->type->id,
-					'event_id' => $intent->getAttribute('event_id'),
-					'key' => Str::upper(Str::random(6)) // Génère une clé unique pour chaque ticket
-				];
+				// On crée autant de ticket que l'utilisateur l'a demandé
+				for ($i = 0; $i < $item->count; $i++) {
+					$tickets[] = [
+						'email' => $user?->email ?? $intent->getAttribute('author_email'),
+						'phone' => $user?->phone ?? $intent->getAttribute('author_phone'),
+						'price' => $item->type->price,
+						'status' => TicketStatusEnum::VALIDATED, // Définit le statut du ticket à 'VALIDATED'
+						'ticket_type_id' => $item->type->id,
+						'event_id' => $intent->getAttribute('event_id'),
+						'key' => Str::upper(Str::random(6)) // Génère une clé unique pour chaque ticket
+					];
+				}
 			}
 
 			// Ajoute les tickets à la commande

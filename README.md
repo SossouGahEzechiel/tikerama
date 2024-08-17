@@ -67,10 +67,20 @@ Ce projet est un test technique développé pour TIKERAMA dans le cadre de ma ca
 
 La documentation de l'API est disponible à l'URL suivante : `http://localhost:8000/api/openapi`.
 
+## Demande d'Accès à l'API
+
+Pour obtenir les identifiants d'accès à l'API, veuillez suivre ces étapes :
+
+1. Rendez-vous sur l'une des URL suivantes de l'application :
+   - [/](/)
+   - [/demandes](/demandes)
+
+2. Remplissez le formulaire avec les informations requises.
+
+3. Soumettez le formulaire.
+
+Vous recevrez ensuite un e-mail contenant les identifiants d'accès à l'API.
+
 ## Remerciements
 
 Je tiens à remercier l'équipe de TIKERAMA pour l'opportunité de participer à ce test technique.
-
----
-
-Pour toute question ou suggestion, n'hésitez pas à me contacter.

@@ -99,6 +99,110 @@
                     }
                 }
             }
+        },
+        "/api/intents": {
+            "post": {
+                "tags": [
+                    "Intentions"
+                ],
+                "summary": "Créer une nouvelle intention de commande",
+                "description": "/**",
+                "operationId": "6d71f3bb4ce2640c56977a6893f79427",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "example@test.com",
+                                        "nullable": true
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "22890000000",
+                                        "nullable": true
+                                    },
+                                    "content": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "slug": {
+                                                    "type": "string",
+                                                    "example": "vip-ticket"
+                                                },
+                                                "count": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "eventSlug": {
+                                        "type": "string",
+                                        "example": "concert-du-20-aout"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Intention de commande créée avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IntentResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Les données fournies sont incorrectes"
+                    }
+                }
+            }
+        },
+        "/api/intents/{slug}": {
+            "get": {
+                "tags": [
+                    "Intentions"
+                ],
+                "summary": "Récupérer une intention de commande par son slug",
+                "description": "Récupère une intention de commande à partir de son slug.",
+                "operationId": "d100d8ef7b3b7cf5ebe8484c26c63719",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Le slug de l'intention de commande",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'intention de commande",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/IntentResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "L'intention de commande n'a pas été trouvée"
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -170,6 +274,64 @@
                 },
                 "type": "object"
             },
+            "IntentResource": {
+                "title": "Intent Resource",
+                "description": "Représentation d'une intention de commande.",
+                "required": [
+                    "slug",
+                    "price",
+                    "userEmail",
+                    "userPhone",
+                    "expires_at",
+                    "content",
+                    "event",
+                    "paymentMethod"
+                ],
+                "properties": {
+                    "slug": {
+                        "type": "string",
+                        "example": "intent-slug-123"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150
+                    },
+                    "userEmail": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "userPhone": {
+                        "type": "string",
+                        "example": "22890000000"
+                    },
+                    "expires_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "20 août 2024 16:30:00"
+                    },
+                    "content": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TicketTypeResource"
+                        }
+                    },
+                    "event": {
+                        "$ref": "#/components/schemas/EventResource"
+                    },
+                    "paymentMethod": {
+                        "type": "string",
+                        "example": "Credit Card"
+                    },
+                    "unComputed": {
+                        "type": "string",
+                        "example": "Certains tickets ne sont plus disponibles",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "TicketTypeResource": {
                 "title": "Ticket Type Resource",
                 "description": "Représentation d'un type de ticket.",
@@ -210,6 +372,10 @@
         {
             "name": "Événements",
             "description": "Endpoints relatifs aux événements."
+        },
+        {
+            "name": "Intentions",
+            "description": "Intentions"
         }
     ]
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\IntentResource;
 use App\Models\{Intent, TicketType};
 use Illuminate\Http\{Request, Response};
+use OpenApi\Annotations as OA;
 
 /**
  * Contrôleur pour les actions liées aux intentions de commande dans l'API.
@@ -13,7 +14,35 @@ use Illuminate\Http\{Request, Response};
 class IntentApiController extends Controller
 {
 	/**
-	 * Stocke une nouvelle intention de commande dans la base de données.
+	 *     /**
+	 * @OA\Post(
+	 *     path="/api/intents",
+	 *     summary="Créer une nouvelle intention de commande",
+	 *     tags={"Intentions"},
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="email", type="string", format="email", example="example@test.com", nullable=true),
+	 *             @OA\Property(property="phone", type="string", example="22890000000", nullable=true),
+	 *             @OA\Property(property="content", type="array",
+	 *                 @OA\Items(
+	 *                     @OA\Property(property="slug", type="string", example="vip-ticket"),
+	 *                     @OA\Property(property="count", type="integer", example=2)
+	 *                 )
+	 *             ),
+	 *             @OA\Property(property="eventSlug", type="string", example="concert-du-20-aout")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=201,
+	 *         description="Intention de commande créée avec succès",
+	 *         @OA\JsonContent(ref="#/components/schemas/IntentResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=422,
+	 *         description="Les données fournies sont incorrectes"
+	 *     )
+	 * )
 	 *
 	 * @param Request $request La requête HTTP entrante.
 	 * @return Response|IntentResource La réponse HTTP ou la ressource Intent.
@@ -109,6 +138,28 @@ class IntentApiController extends Controller
 
 	/**
 	 * Récupère une intention de commande à partir de son slug.
+	 *
+	 *      * @OA\Get(
+	 *     path="/api/intents/{slug}",
+	 *     summary="Récupérer une intention de commande par son slug",
+	 *     tags={"Intentions"},
+	 *     @OA\Parameter(
+	 *         name="slug",
+	 *         in="path",
+	 *         required=true,
+	 *         description="Le slug de l'intention de commande",
+	 *         @OA\Schema(type="string")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=200,
+	 *         description="Détails de l'intention de commande",
+	 *         @OA\JsonContent(ref="#/components/schemas/IntentResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=404,
+	 *         description="L'intention de commande n'a pas été trouvée"
+	 *     )
+	 * )
 	 *
 	 * @param string $slug Le slug de l'intention de commande.
 	 * @return Response|IntentResource La réponse HTTP ou la ressource Intent.

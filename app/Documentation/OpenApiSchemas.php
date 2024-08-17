@@ -28,6 +28,27 @@ use OpenApi\Annotations as OA;
  *     ),
  *     @OA\Property(property="lowerPrice", type="integer|string", example=1000),
  * )
+ *
+ * @OA\Schema(
+ *     schema="IntentResource",
+ *     type="object",
+ *     title="Intent Resource",
+ *     description="Représentation d'une intention de commande.",
+ *     required={"slug", "price", "userEmail", "userPhone", "expires_at", "content", "event", "paymentMethod"},
+ *     @OA\Property(property="slug", type="string", example="intent-slug-123"),
+ *     @OA\Property(property="price", type="number", format="float", example=150.00),
+ *     @OA\Property(property="userEmail", type="string", format="email", example="user@example.com"),
+ *     @OA\Property(property="userPhone", type="string", example="22890000000"),
+ *     @OA\Property(property="expires_at", type="string", format="date-time", example="20 août 2024 16:30:00"),
+ *     @OA\Property(
+ *         property="content",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/TicketTypeResource")
+ *     ),
+ *     @OA\Property(property="event", ref="#/components/schemas/EventResource"),
+ *     @OA\Property(property="paymentMethod", type="string", example="Credit Card"),
+ *     @OA\Property(property="unComputed", type="string", nullable=true, example="Certains tickets ne sont plus disponibles")
+ * )
  */
 class OpenApiSchemas
 {

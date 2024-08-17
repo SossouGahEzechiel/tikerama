@@ -4,17 +4,17 @@
         "title": "API Tikerama",
         "description": "Documentation de l'API pour le projet Tikerama.",
         "contact": {
-            "email": "support@tikerama.com"
+            "email": "ezecsossougah@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
         },
         "version": "1.0.0"
     },
     "servers": [
         {
-            "url": "http://localhost:8001",
+            "url": "http://localhost:8000",
             "description": "Serveur de développement"
         }
     ],
@@ -791,6 +791,20 @@
                     }
                 },
                 "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "ApiKeyAuth": {
+                "type": "apiKey",
+                "description": "Clé d'API pour accéder aux endpoints",
+                "name": "Api-Key",
+                "in": "header"
+            },
+            "ApiKeyNameAuth": {
+                "type": "apiKey",
+                "description": "Nom de la clé d'API",
+                "name": "Api-Key-Name",
+                "in": "header"
             }
         }
     },

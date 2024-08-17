@@ -305,6 +305,193 @@
                     }
                 }
             }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Enregistre un nouvel utilisateur",
+                "operationId": "836741aa87a676ec9a7c4ebee320b418",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "firstName",
+                                    "lastName",
+                                    "phone",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "firstName": {
+                                        "type": "string",
+                                        "example": "John"
+                                    },
+                                    "lastName": {
+                                        "type": "string",
+                                        "example": "Doe"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Utilisateur enregistré avec succès",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserResource"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Utilisateur"
+                ],
+                "summary": "Authentifie un utilisateur et génère un token d'accès",
+                "operationId": "52038e41a5936a6eac502753ed70936c",
+                "requestBody": {
+                    "description": "Les informations d'authentification",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Authentification réussie, renvoie les informations de l'utilisateur et un token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "firstName": {
+                                            "type": "string",
+                                            "example": "John"
+                                        },
+                                        "lastName": {
+                                            "type": "string",
+                                            "example": "Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "user@example.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "+1234567890"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Erreur d'authentification, identifiants incorrects",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ces identifiants ne correspondent pas à nos enregistrements."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "L'adresse email est requise."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Une erreur est survenue lors de l'authentification."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -531,6 +718,46 @@
                 },
                 "type": "object"
             },
+            "UserResource": {
+                "title": "Ressource utilisateur",
+                "description": "Représentation des informations d'un utilisateur",
+                "properties": {
+                    "firstName": {
+                        "description": "Le prénom de l'utilisateur",
+                        "type": "string",
+                        "example": "John"
+                    },
+                    "lastName": {
+                        "description": "Le nom de famille de l'utilisateur",
+                        "type": "string",
+                        "example": "Doe"
+                    },
+                    "email": {
+                        "description": "L'adresse email de l'utilisateur",
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "phone": {
+                        "description": "Le numéro de téléphone de l'utilisateur",
+                        "type": "string",
+                        "example": "+1234567890"
+                    },
+                    "token": {
+                        "description": "Le token d'accès de l'utilisateur, généré lors de l'authentification",
+                        "type": "string",
+                        "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                    },
+                    "orders": {
+                        "description": "La liste des commandes passées par l'utilisateur",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/OrderResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "TicketTypeResource": {
                 "title": "Ticket Type Resource",
                 "description": "Représentation d'un type de ticket.",
@@ -579,6 +806,14 @@
         {
             "name": "Orders",
             "description": "Orders"
+        },
+        {
+            "name": "User",
+            "description": "User"
+        },
+        {
+            "name": "Utilisateur",
+            "description": "Utilisateur"
         }
     ]
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use OpenApi\Annotations as OA;
 use App\Http\Resources\{OrderResource, UserResource};
 use App\Models\User;
 use Illuminate\Http\{Request, Response};
@@ -13,12 +14,34 @@ use Throwable;
 class UserApiController extends Controller
 {
 	/**
-	 * Enregistre un nouvel utilisateur.
-	 *
-	 * @param Request $request
-	 * @return Response|UserResource
-	 * Retourne une réponse en cas d'erreur ou les données de l'utilisateur enregistré.
+	 * @OA\Post(
+	 *     path="/api/register",
+	 *     summary="Enregistre un nouvel utilisateur",
+	 *     tags={"User"},
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         @OA\JsonContent(
+	 *             required={"firstName", "lastName", "phone", "password", "password_confirmation"},
+	 *             @OA\Property(property="firstName", type="string", example="John"),
+	 *             @OA\Property(property="lastName", type="string", example="Doe"),
+	 *             @OA\Property(property="phone", type="string", example="123456789"),
+	 *             @OA\Property(property="email", type="string", example="john.doe@example.com"),
+	 *             @OA\Property(property="password", type="string", format="password", example="password"),
+	 *             @OA\Property(property="password_confirmation", type="string", format="password", example="password"),
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=201,
+	 *         description="Utilisateur enregistré avec succès",
+	 *         @OA\JsonContent(ref="#/components/schemas/UserResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=422,
+	 *         description="Erreur de validation"
+	 *     )
+	 * )
 	 */
+
 	public function register(Request $request): Response|UserResource
 	{
 		// Définition des attributs et messages de validation personnalisés
@@ -71,11 +94,52 @@ class UserApiController extends Controller
 	}
 
 	/**
-	 * Authentifie un utilisateur et génère un token d'accès.
-	 *
-	 * @param Request $request
-	 * @return Response|UserResource
-	 * Retourne une réponse d'erreur ou les informations de l'utilisateur avec un token d'accès.
+	 * @OA\Post(
+	 *     path="/api/login",
+	 *     summary="Authentifie un utilisateur et génère un token d'accès",
+	 *     tags={"Utilisateur"},
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         description="Les informations d'authentification",
+	 *         @OA\JsonContent(
+	 *             required={"email", "password"},
+	 *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+	 *             @OA\Property(property="password", type="string", format="password", example="password123"),
+	 *         ),
+	 *     ),
+	 *     @OA\Response(
+	 *         response=200,
+	 *         description="Authentification réussie, renvoie les informations de l'utilisateur et un token",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="firstName", type="string", example="John"),
+	 *             @OA\Property(property="lastName", type="string", example="Doe"),
+	 *             @OA\Property(property="email", type="string", example="user@example.com"),
+	 *             @OA\Property(property="phone", type="string", example="+1234567890"),
+	 *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=401,
+	 *         description="Erreur d'authentification, identifiants incorrects",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="Ces identifiants ne correspondent pas à nos enregistrements.")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=422,
+	 *         description="Erreur de validation des données",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="L'adresse email est requise.")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=500,
+	 *         description="Erreur serveur",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="Une erreur est survenue lors de l'authentification.")
+	 *         )
+	 *     )
+	 * )
 	 */
 	public function login(Request $request): Response|UserResource
 	{

@@ -102,6 +102,31 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="email", type="string", format="email", example="user@example.com"),
  *     @OA\Property(property="phone", type="string", example="22890000000")
  * )
+ *
+ *
+ *
+ * ----- UserResource
+ *
+ *
+ *  * @OA\Schema(
+ *     schema="UserResource",
+ *     type="object",
+ *     title="Ressource utilisateur",
+ *     description="Représentation des informations d'un utilisateur",
+ *     @OA\Property(property="firstName", type="string", example="John", description="Le prénom de l'utilisateur"),
+ *     @OA\Property(property="lastName", type="string", example="Doe", description="Le nom de famille de l'utilisateur"),
+ *     @OA\Property(property="email", type="string", format="email", example="user@example.com", description="L'adresse email de l'utilisateur"),
+ *     @OA\Property(property="phone", type="string", example="+1234567890", description="Le numéro de téléphone de l'utilisateur"),
+ *     @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...", description="Le token d'accès de l'utilisateur, généré lors de l'authentification"),
+ *     @OA\Property(
+ *         property="orders",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/OrderResource"),
+ *         description="La liste des commandes passées par l'utilisateur"
+ *     )
+ * )
+ *
+ *
  */
 
 class OpenApiSchemas

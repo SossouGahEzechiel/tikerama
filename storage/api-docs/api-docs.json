@@ -203,6 +203,108 @@
                     }
                 }
             }
+        },
+        "/api/orders/{slug}": {
+            "post": {
+                "tags": [
+                    "Orders"
+                ],
+                "summary": "Créer une nouvelle commande à partir d'une intention",
+                "description": "Cette route permet de créer une nouvelle commande en utilisant les informations d'une intention de commande existante. Elle génère également les tickets associés.",
+                "operationId": "createOrder",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Le slug de l'intention de commande.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "intent-slug-123"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Données de la commande incluant le moyen de paiement",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "paymentMethod"
+                                ],
+                                "properties": {
+                                    "paymentMethod": {
+                                        "type": "string",
+                                        "example": "Credit Card"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Commande créée avec succès.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OrderResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "L'intention de commande n'existe pas.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "L'intention de commande à laquelle vous essayez d'accéder semble ne pas exister"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erreur de validation des données fournies.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Le moyen de payement est requis."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erreur serveur lors de la création de la commande.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Une erreur est survenue lors du traitement de la commande."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -224,6 +326,7 @@
                 ],
                 "properties": {
                     "title": {
+                        "description": "EventResource",
                         "type": "string",
                         "example": "Concert du 20 août"
                     },
@@ -332,6 +435,102 @@
                 },
                 "type": "object"
             },
+            "OrderResource": {
+                "title": "Order Resource",
+                "description": "Représente une commande avec ses tickets associés.",
+                "required": [
+                    "price",
+                    "author_email",
+                    "author_phone",
+                    "event_id",
+                    "payment_method",
+                    "number",
+                    "tickets"
+                ],
+                "properties": {
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 150
+                    },
+                    "author_email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "author_phone": {
+                        "type": "string",
+                        "example": "22890000000"
+                    },
+                    "event_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "payment_method": {
+                        "type": "string",
+                        "example": "Credit Card"
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "AB12CD"
+                    },
+                    "tickets": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TicketResource"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "TicketResource": {
+                "title": "Ticket Resource",
+                "description": "Représente un ticket associé à un événement et à une commande.",
+                "required": [
+                    "key",
+                    "price",
+                    "status",
+                    "createdAt",
+                    "email",
+                    "phone"
+                ],
+                "properties": {
+                    "key": {
+                        "type": "string",
+                        "example": "ABC123"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 50
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "VALIDATED"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "16 Août 2024 14:30"
+                    },
+                    "event": {
+                        "$ref": "#/components/schemas/EventResource"
+                    },
+                    "order": {
+                        "$ref": "#/components/schemas/OrderResource"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "22890000000"
+                    }
+                },
+                "type": "object"
+            },
             "TicketTypeResource": {
                 "title": "Ticket Type Resource",
                 "description": "Représentation d'un type de ticket.",
@@ -376,6 +575,10 @@
         {
             "name": "Intentions",
             "description": "Intentions"
+        },
+        {
+            "name": "Orders",
+            "description": "Orders"
         }
     ]
 }

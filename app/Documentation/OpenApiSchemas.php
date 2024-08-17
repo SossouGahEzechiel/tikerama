@@ -6,6 +6,7 @@ namespace App\Documentation;
 use OpenApi\Annotations as OA;
 
 /**
+ * EventResource
  * @OA\Schema(
  *     schema="EventResource",
  *     type="object",
@@ -29,6 +30,8 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="lowerPrice", type="integer|string", example=1000),
  * )
  *
+ * ---- IntentResource
+ *
  * @OA\Schema(
  *     schema="IntentResource",
  *     type="object",
@@ -49,7 +52,58 @@ use OpenApi\Annotations as OA;
  *     @OA\Property(property="paymentMethod", type="string", example="Credit Card"),
  *     @OA\Property(property="unComputed", type="string", nullable=true, example="Certains tickets ne sont plus disponibles")
  * )
+ *
+ *
+ * ----- OrderResource
+ *
+ * @OA\Schema(
+ *     schema="OrderResource",
+ *     type="object",
+ *     title="Order Resource",
+ *     description="Représente une commande avec ses tickets associés.",
+ *     required={"price", "author_email", "author_phone", "event_id", "payment_method", "number", "tickets"},
+ *     @OA\Property(property="price", type="number", format="float", example=150.00),
+ *     @OA\Property(property="author_email", type="string", format="email", example="user@example.com"),
+ *     @OA\Property(property="author_phone", type="string", example="22890000000"),
+ *     @OA\Property(property="event_id", type="integer", example=1),
+ *     @OA\Property(property="payment_method", type="string", example="Credit Card"),
+ *     @OA\Property(property="number", type="string", example="AB12CD"),
+ *     @OA\Property(
+ *         property="tickets",
+ *         type="array",
+ *         @OA\Items(ref="#/components/schemas/TicketResource")
+ *     )
+ * )
+ *
+ *
+ * ----- TicketResource
+ *
+ *
+ * @OA\Schema(
+ *     schema="TicketResource",
+ *     type="object",
+ *     title="Ticket Resource",
+ *     description="Représente un ticket associé à un événement et à une commande.",
+ *     required={"key", "price", "status", "createdAt", "email", "phone"},
+ *     @OA\Property(property="key", type="string", example="ABC123"),
+ *     @OA\Property(property="price", type="number", format="float", example=50.00),
+ *     @OA\Property(property="status", type="string", example="VALIDATED"),
+ *     @OA\Property(property="createdAt", type="string", format="date-time", example="16 Août 2024 14:30"),
+ *     @OA\Property(
+ *         property="event",
+ *         type="object",
+ *         ref="#/components/schemas/EventResource"
+ *     ),
+ *     @OA\Property(
+ *         property="order",
+ *         type="object",
+ *         ref="#/components/schemas/OrderResource"
+ *     ),
+ *     @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+ *     @OA\Property(property="phone", type="string", example="22890000000")
+ * )
  */
+
 class OpenApiSchemas
 {
 }

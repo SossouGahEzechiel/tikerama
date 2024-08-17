@@ -11,6 +11,7 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use OpenApi\Annotations as OA;
 use Throwable;
 
 /**
@@ -25,15 +26,54 @@ use Throwable;
 class OrderApiController extends Controller
 {
 	/**
-	 * Crée une nouvelle commande en fonction d'une intention de commande existante.
-	 *
-	 * Cette méthode valide le moyen de paiement envoyé dans la requête, récupère l'intention de commande
-	 * associée au slug fourni, puis crée une nouvelle commande. Elle génère également les tickets associés
-	 * en utilisant les informations présentes dans l'intention de commande.
-	 *
-	 * @param Request $request La requête contenant les données de la commande, y compris le moyen de paiement.
-	 * @param string $slug Le slug de l'intention de commande.
-	 * @return Response|OrderResource La réponse contenant les détails de la commande créée ou une réponse d'erreur en cas d'échec.
+	 * @OA\Post(
+	 *     path="/api/orders/{slug}",
+	 *     summary="Créer une nouvelle commande à partir d'une intention",
+	 *     description="Cette route permet de créer une nouvelle commande en utilisant les informations d'une intention de commande existante. Elle génère également les tickets associés.",
+	 *     operationId="createOrder",
+	 *     tags={"Orders"},
+	 *     @OA\Parameter(
+	 *         name="slug",
+	 *         in="path",
+	 *         required=true,
+	 *         description="Le slug de l'intention de commande.",
+	 *         @OA\Schema(type="string", example="intent-slug-123")
+	 *     ),
+	 *     @OA\RequestBody(
+	 *         required=true,
+	 *         description="Données de la commande incluant le moyen de paiement",
+	 *         @OA\JsonContent(
+	 *             required={"paymentMethod"},
+	 *             @OA\Property(property="paymentMethod", type="string", example="Credit Card")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=200,
+	 *         description="Commande créée avec succès.",
+	 *         @OA\JsonContent(ref="#/components/schemas/OrderResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=404,
+	 *         description="L'intention de commande n'existe pas.",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="L'intention de commande à laquelle vous essayez d'accéder semble ne pas exister")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=422,
+	 *         description="Erreur de validation des données fournies.",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="Le moyen de payement est requis.")
+	 *         )
+	 *     ),
+	 *     @OA\Response(
+	 *         response=500,
+	 *         description="Erreur serveur lors de la création de la commande.",
+	 *         @OA\JsonContent(
+	 *             @OA\Property(property="message", type="string", example="Une erreur est survenue lors du traitement de la commande.")
+	 *         )
+	 *     )
+	 * )
 	 */
 	public function store(Request $request, string $slug): Response|OrderResource
 	{

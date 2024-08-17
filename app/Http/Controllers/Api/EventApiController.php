@@ -8,14 +8,10 @@ use App\Models\Event;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Response;
+use OpenApi\Annotations as OA;
 
 /**
- * Contrôleur API responsable de la gestion des endpoints liés aux événements.
- * Fournit des fonctionnalités pour lister et afficher les événements avec des
- * options de filtrage basées sur les paramètres de la requête.
- *
- * @package Tikerama-Test
- * @author SOSSOU-GAH Ézéchiel
+ * @OA\Tag(name="Événements", description="Endpoints relatifs aux événements.")
  */
 class EventApiController extends Controller
 {
@@ -26,24 +22,50 @@ class EventApiController extends Controller
 	 * et applique un filtrage sur l'attribut 'code' si fourni dans la requête.
 	 * Les événements sont paginés et triés par leur date en ordre croissant.
 	 *
+	 *  * @OA\Get(
+	 *     path="/api/events",
+	 *     tags={"Événements"},
+	 *     summary="Liste des événements à venir",
+	 *     description="Récupère une liste d'événements filtrée et paginée.",
+	 *     @OA\Parameter(
+	 *         name="code",
+	 *         in="query",
+	 *         required=false,
+	 *         description="Filtre les événements par code.",
+	 *         @OA\Schema(type="string")
+	 *     ),
+	 *     @OA\Parameter(
+	 *         name="perPage",
+	 *         in="query",
+	 *         required=false,
+	 *         description="Nombre d'événements par page.",
+	 *         @OA\Schema(type="integer")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=200,
+	 *         description="Liste paginée des événements",
+	 *         @OA\JsonContent(ref="#/components/schemas/EventResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=400,
+	 *         description="Requête incorrecte."
+	 *     )
+	 * )
+	 *
 	 * @return AnonymousResourceCollection
 	 */
 	public function index(): AnonymousResourceCollection
 	{
 		return EventResource::collection(
 			Event::query()
-				// Applique un filtre sur 'code' si le paramètre de requête 'code' est présent
 				->when(
 					request()->has('code'),
 					fn(Builder $builder) => $builder->where('code', 'like', "%" . request()->input('code') . "%")
 				)
-				// Filtre les événements qui sont à la date du jour ou plus tard
 				->whereYear('date', '>=', ($today = today())->year)
 				->whereMonth('date', '>=', $today->month)
 				->whereDay('date', '>=', $today->day)
-				// Trie les événements par date en ordre croissant
 				->orderBy('date')
-				// Pagine les résultats, avec 21 événements par page par défaut
 				->paginate(request()->query->getInt('perPage', 21))
 		);
 	}
@@ -55,20 +77,38 @@ class EventApiController extends Controller
 	 * événement n'est trouvé, elle renvoie une réponse 404. Si un événement est trouvé,
 	 * il est retourné sous forme de ressource avec sa relation 'ticketTypes' chargée.
 	 *
+	 * @OA\Get(
+	 *     path="/api/events/{slug}",
+	 *     tags={"Événements"},
+	 *     summary="Détails d'un événement",
+	 *     description="Récupère un événement en utilisant son slug.",
+	 *     @OA\Parameter(
+	 *         name="slug",
+	 *         in="path",
+	 *         required=true,
+	 *         description="Le slug de l'événement.",
+	 *         @OA\Schema(type="string")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=200,
+	 *         description="Détails de l'événement.",
+	 *         @OA\JsonContent(ref="#/components/schemas/EventResource")
+	 *     ),
+	 *     @OA\Response(
+	 *         response=404,
+	 *         description="Aucun événement trouvé."
+	 *     )
+	 * )
+	 *
 	 * @param string $slug Le slug de l'événement.
 	 * @return Response|EventResource
 	 */
 	public function get(string $slug): Response|EventResource
 	{
-		/**
-		 * @var Event $event
-		 */
 		if (!$event = Event::query()->firstWhere('slug', $slug)) {
-			// Retourne une réponse 404 si l'événement n'est pas trouvé
 			return __404();
 		}
 
-		// Retourne la ressource de l'événement avec la relation ticketTypes chargée
 		return new EventResource($event->load('ticketTypes'));
 	}
 }

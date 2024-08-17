@@ -4,9 +4,21 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Annotations as OA;
 
 /**
- * Ressource pour représenter un type de ticket dans l'API.
+ * @OA\Schema(
+ *     schema="TicketTypeResource",
+ *     type="object",
+ *     title="Ticket Type Resource",
+ *     description="Représentation d'un type de ticket.",
+ *     required={"name", "slug", "price", "quantity", "description"},
+ *     @OA\Property(property="name", type="string", example="VIP"),
+ *     @OA\Property(property="slug", type="string", example="vip-ticket"),
+ *     @OA\Property(property="price", type="number", example=15000),
+ *     @OA\Property(property="quantity", type="integer", example=100),
+ *     @OA\Property(property="description", type="string", example="Accès VIP avec des sièges réservés.")
+ * )
  */
 class TicketTypeResource extends JsonResource
 {

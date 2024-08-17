@@ -1,0 +1,215 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Tikerama",
+        "description": "Documentation de l'API pour le projet Tikerama.",
+        "contact": {
+            "email": "support@tikerama.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8001",
+            "description": "Serveur de développement"
+        }
+    ],
+    "paths": {
+        "/api/events": {
+            "get": {
+                "tags": [
+                    "Événements"
+                ],
+                "summary": "Liste des événements à venir",
+                "description": "Récupère une liste d'événements filtrée et paginée.",
+                "operationId": "275cdabe554e8b12845750e37ffca5c2",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Filtre les événements par code.",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "perPage",
+                        "in": "query",
+                        "description": "Nombre d'événements par page.",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste paginée des événements",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EventResource"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Requête incorrecte."
+                    }
+                }
+            }
+        },
+        "/api/events/{slug}": {
+            "get": {
+                "tags": [
+                    "Événements"
+                ],
+                "summary": "Détails d'un événement",
+                "description": "Récupère un événement en utilisant son slug.",
+                "operationId": "b42161b82b02e84a22e83f90381b1f04",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Le slug de l'événement.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Détails de l'événement.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/EventResource"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucun événement trouvé."
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "EventResource": {
+                "title": "Event Resource",
+                "description": "Représentation d'un événement.",
+                "required": [
+                    "title",
+                    "code",
+                    "date",
+                    "hour",
+                    "city",
+                    "slug",
+                    "image",
+                    "category",
+                    "lowerPrice",
+                    "types"
+                ],
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Concert du 20 août"
+                    },
+                    "code": {
+                        "type": "string",
+                        "example": "767VF"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "ven. 16 août 2024"
+                    },
+                    "hour": {
+                        "type": "string",
+                        "format": "time",
+                        "example": "15:40"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Lomé"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "concert-du-20-aout"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "https://example.com/image.jpg"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Un concert exceptionnel au Stade de Lomé."
+                    },
+                    "category": {
+                        "type": "string",
+                        "example": "Musique"
+                    },
+                    "types": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/TicketTypeResource"
+                        }
+                    },
+                    "lowerPrice": {
+                        "type": "integer|string",
+                        "example": 1000
+                    }
+                },
+                "type": "object"
+            },
+            "TicketTypeResource": {
+                "title": "Ticket Type Resource",
+                "description": "Représentation d'un type de ticket.",
+                "required": [
+                    "name",
+                    "slug",
+                    "price",
+                    "quantity",
+                    "description"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "VIP"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "vip-ticket"
+                    },
+                    "price": {
+                        "type": "number",
+                        "example": 15000
+                    },
+                    "quantity": {
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Accès VIP avec des sièges réservés."
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Événements",
+            "description": "Endpoints relatifs aux événements."
+        }
+    ]
+}
